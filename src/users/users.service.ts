@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -11,11 +12,14 @@ export class UsersService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
   async create(createUserDto: CreateUserDto) {
-    let check = await this.usersRepository.find({ where: { login: createUserDto.login } });
-    if (check.length !== 0) {
-      return new HttpException('User with the same name already exist', 400);
+    if (this.findByLogin(createUserDto.login) === null) {
+      throw new HttpException('User with the same name already exist', 400);
     }
-    const usr = this.usersRepository.insert(createUserDto);
+    const hashPassword = await bcrypt.hash(createUserDto.password, 5);
+    const usr = this.usersRepository.insert({
+      ...createUserDto,
+      password: hashPassword,
+    });
     return {
       login: createUserDto.login,
     };
@@ -26,11 +30,15 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    return await this.usersRepository.findOne({ where: { id: id } })
+    return await this.usersRepository.findOne({ where: { id: id } });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     return await this.usersRepository.update(id, updateUserDto);
+  }
+
+  async findByLogin(login: string): Promise<User> {
+    return await this.usersRepository.findOne({ where: { login: login } });
   }
 
   remove(id) {
