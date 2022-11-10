@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,7 +10,11 @@ export class UsersService {
 
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    let check = await this.usersRepository.find({ where: { login: createUserDto.login } });
+    if (check.length !== 0) {
+      return new HttpException('User with the same name already exist', 400);
+    }
     const usr = this.usersRepository.insert(createUserDto);
     return {
       login: createUserDto.login,
