@@ -1,1 +1,1 @@
-export const jwtSecret = "someSecretString....123412341234"
+export const jwtSecret = 'someSecretString....123412341234';

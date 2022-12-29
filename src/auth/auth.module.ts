@@ -15,8 +15,9 @@ import { jwtSecret } from './jwt.const';
       signOptions: {
         expiresIn: '30m',
       },
-    }),],
+    }),
+  ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

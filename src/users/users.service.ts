@@ -5,11 +5,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { Details } from './entities/Details';
 
 @Injectable()
 export class UsersService {
-
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     if (this.findByLogin(createUserDto.login) === null) {
@@ -43,5 +45,21 @@ export class UsersService {
 
   remove(id) {
     this.usersRepository.remove(id);
+  }
+
+  async getUnique(atrName: string, table: string): Promise<any> {
+    return await this.usersRepository
+      .createQueryBuilder(table)
+      .select(`${table}.${atrName}`, atrName)
+      .distinct(true)
+      .getRawMany();
+  }
+
+  tableShift(array, shiftValue, max): any {
+    const newArr = Array();
+    array.forEach((i) =>
+      newArr.push(i + shiftValue > max ? i + shiftValue - max : i + shiftValue),
+    );
+    return newArr;
   }
 }
