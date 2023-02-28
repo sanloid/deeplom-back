@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,17 +24,21 @@ export class AuthService {
 
   async login(loginDto: AuthDto) {
     const user = await this.validateUser(loginDto);
-
     return this.generateToken(user);
   }
 
-  private async generateToken(usr) {
+  private async generateToken(usr: User) {
     return {
-      token: this.jwtService.sign({ name: usr.name }),
+      token: this.jwtService.sign({
+        id: usr.id,
+        login: usr.login,
+        firstName: usr.firstName,
+        lastName: usr.lastName,
+      }),
     };
   }
 
-  private async validateUser(usr: AuthDto) {
+  async validateUser(usr: AuthDto) {
     const user = await this.usersService.findByLogin(usr.login);
     if (user === null)
       throw new UnauthorizedException({

@@ -1,13 +1,4 @@
-import {
-  Column,
-  Entity,
-  // JoinColumn,
-  // OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-// import { Adress } from './Adress';
-// import { Details } from './Details';
-// import { UserPassport } from './UserPassport';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -19,10 +10,6 @@ export class User {
 
   @Column({ name: 'password' })
   password: string;
-
-  // @OneToOne((type) => Details)
-  // @JoinColumn({ name: 'details' })
-  // details: Details;
 
   @Column({ name: 'firstName', nullable: true })
   firstName: string;
@@ -45,10 +32,6 @@ export class User {
   @Column({ name: 'dateOfBirth', nullable: true })
   dateOfBirth: Date;
 
-  // @OneToOne((type) => Adress)
-  // @JoinColumn()
-  // adress: Adress;
-
   @Column({ name: 'country', nullable: true })
   country: string;
 
@@ -66,10 +49,6 @@ export class User {
 
   @Column({ name: 'flat', nullable: true })
   flat: string;
-
-  // @OneToOne((type) => UserPassport)
-  // @JoinColumn()
-  // userPassport: UserPassport;
 
   @Column({ name: 'series', nullable: true })
   series: string;

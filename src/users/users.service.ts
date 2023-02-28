@@ -14,7 +14,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    if (this.findByLogin(createUserDto.login) === null) {
+    const founded = await this.findByLogin(createUserDto.login);
+    if (founded !== null) {
       throw new HttpException('User with the same name already exist', 400);
     }
     const hashPassword = await bcrypt.hash(createUserDto.password, 5);
@@ -22,9 +23,9 @@ export class UsersService {
       ...createUserDto,
       password: hashPassword,
     });
-    return {
-      login: createUserDto.login,
-    };
+    const newUser = new User();
+    newUser.login = createUserDto.login;
+    return newUser;
   }
 
   findAll() {
