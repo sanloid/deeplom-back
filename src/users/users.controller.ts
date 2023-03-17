@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -38,5 +37,15 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('one/:id')
+  updateOneAtr(
+    @Param('id') id: string,
+    @Body('value') newAtr: string,
+    @Body('name') atrName: string,
+  ) {
+    return this.usersService.updateOneAtr(id, newAtr, atrName);
   }
 }

@@ -40,6 +40,11 @@ export class UsersService {
     return await this.usersRepository.update(id, updateUserDto);
   }
 
+  async updateOneAtr(id: string, newAtr: string, atrName: string) {
+    const upd = await this.findOne(Number(id));
+    return await this.usersRepository.update(id, { ...upd, [atrName]: newAtr });
+  }
+
   async findByLogin(login: string): Promise<User> {
     return await this.usersRepository.findOne({ where: { login: login } });
   }
